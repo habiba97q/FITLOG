@@ -4,7 +4,8 @@ import logo from "@/assets/logo.png"
 
 const Navbar = () => {
     return (
-        <div className="container mx-auto navbar bg-base-100 shadow-sm">
+        <nav className='bg-base-100 shadow-sm'>
+        <div className="container mx-auto navbar ">
             <div className="navbar-start">
                 <div className="dropdown">
                     <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -51,6 +52,7 @@ const Navbar = () => {
                 <button className="btn">Saved</button>
             </div>
         </div>
+        </nav>
     );
 };
 
