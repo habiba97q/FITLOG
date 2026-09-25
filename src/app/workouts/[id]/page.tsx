@@ -1,179 +1,176 @@
-import React from 'react';
+"use client";
+
+import React, { useEffect, useState, use } from 'react';
 import Image from 'next/image';
+import { usePlan } from '@/context/PlanContext';
 import { ILibrary } from '@/types/library.type';
 
-interface IDetailsPageProps {
-    params: Promise<{
-        id: string;
-    }>;
-}
+export default function DetailsPage({ params }: { params: Promise<{ id: string }> }) {
+    const resolvedParams = use(params);
+    const id = resolvedParams.id;
+    const [workout, setWorkout] = useState<ILibrary | null>(null);
+    const [loading, setLoading] = useState(true);
+    const { addToPlan, addToSaved } = usePlan();
 
-const getLibrary = async () => {
-    const res = await fetch(
-        "https://api.abcz.workers.dev/api/fitlog"
-    );
+    useEffect(() => {
+        fetch(`https://api.abcz.workers.dev/api/fitlog/${id}`)
+            .then((res) => res.json())
+            .then((data) => {
+                if (data && data.id) {
+                    setWorkout(data);
+                }
+                setLoading(false);
+            })
+            .catch(() => {
+                fetch('https://api.abcz.workers.dev/api/fitlog')
+                    .then((res) => res.json())
+                    .then((list: ILibrary[]) => {
+                        const item = list.find((w) => String(w.id) === String(id));
+                        if (item) setWorkout(item);
+                        setLoading(false);
+                    })
+                    .catch(() => {
+                        setLoading(false);
+                    });
+            });
+    }, [id]);
 
-    const data = await res.json();
-
-    return data;
-};
-
-const DetailsPage = async ({ params }: IDetailsPageProps) => {
-    const { id } = await params;
-
-    const data = await getLibrary();
-
-    const library = data.find(
-        (library: ILibrary) => String(library.id) === String(id)
-    );
-
-    if (!library) {
+    if (loading) {
         return (
-            <div className="container mx-auto px-4 py-20">
-                <h2 className="text-2xl font-bold">
-                    Workout not found
-                </h2>
+            <div className="container mx-auto px-6 py-20 text-center text-sm text-[#8e95a5]">
+                Loading workout…
+            </div>
+        );
+    }
+
+    if (!workout) {
+        return (
+            <div className="container mx-auto px-6 py-20 text-center">
+                <h2 className="text-xl font-bold text-white">Workout not found</h2>
             </div>
         );
     }
 
     return (
-        <section className="container mx-auto px-4 py-10">
-
-            {/* Image */}
-            <div className="relative w-full h-[400px]">
-                <Image
-                    src={library.image}
-                    alt={library.name}
-                    fill
-                    className="object-cover rounded-xl"
-                />
-            </div>
-
-            {/* Content */}
-            <div className="mt-8">
-
-                {/* Muscle Groups */}
-                <div className="flex gap-2 mb-4">
-                    {library.muscleGroups.map((muscle, index) => (
-                        <span
-                            key={index}
-                            className="text-xs border border-[#ccff00] text-[#ccff00] px-3 py-1 rounded-full"
-                        >
-                            {muscle}
-                        </span>
-                    ))}
+        <section className="container mx-auto px-6 py-8 md:py-12">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+                
+                <div className="lg:col-span-6 w-full">
+                    <div className="relative w-full aspect-square rounded-2xl overflow-hidden bg-[#13161c]">
+                        <Image
+                            src={workout.image}
+                            alt={workout.name}
+                            fill
+                            priority
+                            sizes="(max-width: 1024px) 100vw, 50vw"
+                            className="object-cover"
+                        />
+                    </div>
                 </div>
 
-                {/* Name */}
-                <h1 className="text-3xl font-bold uppercase">
-                    {library.name}
-                </h1>
+                <div className="lg:col-span-6 space-y-5">
+                    <div>
+                        <h1 className="font-display font-black text-3xl sm:text-4xl lg:text-5xl text-white uppercase tracking-tight leading-tight">
+                            {workout.name}
+                        </h1>
 
-                {/* Description */}
-                <p className="text-[#9CA3AF] mt-4">
-                    {library.description}
-                </p>
-
-                {/* Workout Information */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
-
-                    <div className="bg-[#111827] p-4 rounded-lg">
-                        <p className="text-[#9CA3AF] text-sm">
-                            Equipment
+                        <p className="text-[#8e95a5] text-xs sm:text-sm mt-2 leading-relaxed">
+                            {workout.description}
                         </p>
 
-                        <p className="font-bold mt-1">
-                            {library.equipment}
-                        </p>
-                    </div>
-
-                    <div className="bg-[#111827] p-4 rounded-lg">
-                        <p className="text-[#9CA3AF] text-sm">
-                            Difficulty
-                        </p>
-
-                        <p className="font-bold mt-1">
-                            {library.difficulty}
-                        </p>
-                    </div>
-
-                    <div className="bg-[#111827] p-4 rounded-lg">
-                        <p className="text-[#9CA3AF] text-sm">
-                            Sets / Reps
-                        </p>
-
-                        <p className="font-bold mt-1">
-                            {library.sets} × {library.reps}
-                        </p>
-                    </div>
-
-                    <div className="bg-[#111827] p-4 rounded-lg">
-                        <p className="text-[#9CA3AF] text-sm">
-                            Duration
-                        </p>
-
-                        <p className="font-bold mt-1">
-                            {library.duration} min
-                        </p>
-                    </div>
-
-                </div>
-
-                {/* Calories & Rating */}
-                <div className="flex gap-6 mt-6 text-sm">
-                    <span>
-                        🔥 {library.caloriesBurned} kcal
-                    </span>
-
-                    <span>
-                        ⭐ {library.rating}
-                    </span>
-                </div>
-
-                {/* Instructions */}
-                <div className="mt-10">
-
-                    <h2 className="text-2xl font-bold mb-5">
-                        INSTRUCTIONS
-                    </h2>
-
-                    <div className="space-y-4">
-                        {library.instructions.map((instruction, index) => (
-                            <div
-                                key={index}
-                                className="flex gap-3"
-                            >
-                                <span className="text-[#ccff00] font-bold">
-                                    {index + 1}.
+                        <div className="flex flex-wrap gap-2 mt-4">
+                            {workout.muscleGroups.map((muscle, index) => (
+                                <span
+                                    key={index}
+                                    className="bg-[#ccff00] text-black text-xs font-bold px-3 py-1 rounded-full"
+                                >
+                                    {muscle}
                                 </span>
+                            ))}
+                        </div>
+                    </div>
 
-                                <p className="text-[#D1D5DB]">
-                                    {instruction}
-                                </p>
-                            </div>
-                        ))}
+                    <div className="bg-[#13161c] rounded-2xl p-5 border border-[#1b1f28] space-y-2.5">
+                        <div className="flex justify-between items-center text-xs pb-2 border-b border-[#1c202a]">
+                            <span className="text-[#7a8291] uppercase tracking-wider font-semibold">EQUIPMENT</span>
+                            <span className="text-white font-medium">{workout.equipment}</span>
+                        </div>
+
+                        <div className="flex justify-between items-center text-xs pb-2 border-b border-[#1c202a]">
+                            <span className="text-[#7a8291] uppercase tracking-wider font-semibold">DIFFICULTY</span>
+                            <span className="text-white font-medium">{workout.difficulty}</span>
+                        </div>
+
+                        <div className="flex justify-between items-center text-xs pb-2 border-b border-[#1c202a]">
+                            <span className="text-[#7a8291] uppercase tracking-wider font-semibold">SETS</span>
+                            <span className="text-white font-medium">{workout.sets}</span>
+                        </div>
+
+                        <div className="flex justify-between items-center text-xs pb-2 border-b border-[#1c202a]">
+                            <span className="text-[#7a8291] uppercase tracking-wider font-semibold">REPS</span>
+                            <span className="text-white font-medium">{workout.reps}</span>
+                        </div>
+
+                        <div className="flex justify-between items-center text-xs pb-2 border-b border-[#1c202a]">
+                            <span className="text-[#7a8291] uppercase tracking-wider font-semibold">DURATION</span>
+                            <span className="text-white font-medium">{workout.duration} min</span>
+                        </div>
+
+                        <div className="flex justify-between items-center text-xs pb-2 border-b border-[#1c202a]">
+                            <span className="text-[#7a8291] uppercase tracking-wider font-semibold">CALORIES</span>
+                            <span className="text-white font-medium">{workout.caloriesBurned} kcal</span>
+                        </div>
+
+                        <div className="flex justify-between items-center text-xs">
+                            <span className="text-[#7a8291] uppercase tracking-wider font-semibold">RATING</span>
+                            <span className="text-white font-medium">{workout.rating}</span>
+                        </div>
+                    </div>
+
+                    <div className="pt-1">
+                        <h2 className="text-xs font-bold uppercase tracking-wider text-white mb-2.5">
+                            INSTRUCTIONS
+                        </h2>
+
+                        <ol className="space-y-2 text-xs text-[#8e95a5] leading-relaxed list-none">
+                            {workout.instructions.map((step, index) => (
+                                <li key={index} className="flex gap-2">
+                                    <span className="text-[#8e95a5] font-medium shrink-0">
+                                        {index + 1}.
+                                    </span>
+                                    <span>{step}</span>
+                                </li>
+                            ))}
+                        </ol>
+                    </div>
+
+                    <div className="pt-2 flex flex-wrap items-center gap-3">
+                        <button
+                            type="button"
+                            onClick={() => addToPlan(workout)}
+                            className="bg-[#ccff00] hover:bg-[#b8e600] text-black font-bold text-xs px-5 py-3 rounded-lg flex items-center gap-2 transition-transform active:scale-95"
+                        >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <span>Add to today&apos;s plan</span>
+                        </button>
+
+                        <button
+                            type="button"
+                            onClick={() => addToSaved(workout)}
+                            className="border border-[#262c38] hover:border-zinc-500 bg-transparent text-white font-medium text-xs px-5 py-3 rounded-lg flex items-center gap-2 transition-colors active:scale-95"
+                        >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                            </svg>
+                            <span>Save for later</span>
+                        </button>
                     </div>
 
                 </div>
 
-                {/* Buttons */}
-                <div className="flex gap-4 mt-10">
-
-                    <button className="bg-[#ccff00] text-black px-6 py-3 rounded-lg font-bold">
-                        Add to today’s plan
-                    </button>
-
-                    <button className="border border-[#ccff00] text-[#ccff00] px-6 py-3 rounded-lg font-bold">
-                        Save for later
-                    </button>
-
-                </div>
-
             </div>
-
         </section>
     );
-};
-
-export default DetailsPage;
+}

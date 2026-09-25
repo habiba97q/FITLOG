@@ -1,74 +1,65 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ILibrary } from '@/types/libraryType';
+import { ILibrary } from '@/types/library.type';
 
-interface ILibraryCardProps {
+interface Props {
     library: ILibrary;
 }
 
-const LibraryCard = ({ library }: ILibraryCardProps) => {
+const LibraryCard = ({ library }: Props) => {
     return (
         <Link
             href={`/workouts/${library.id}`}
-            className='bg-[#111827] rounded-xl overflow-hidden block'
+            className="group bg-[#13161c] rounded-xl overflow-hidden block transition-all duration-200 hover:-translate-y-1 hover:shadow-xl border border-transparent hover:border-[#1e232e]"
         >
+            <div className="relative w-full h-[190px] sm:h-[210px] bg-[#1a1e27] overflow-hidden">
+                <Image
+                    src={library.image}
+                    alt={library.name}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+            </div>
 
-            {/* Image */}
-            <Image
-                src={library.image}
-                alt={library.name}
-                width={740}
-                height={400}
-                className='w-full h-[220px] object-cover'
-            />
-
-            {/* Card Content */}
-            <div className='p-5'>
-
-                {/* Category */}
-                <div className='flex gap-2 mb-3'>
-                    {
-                        library.muscleGroups.map((muscle, index) => (
-                            <span
-                                key={index}
-                                className='text-xs border border-[#ccff00] text-[#ccff00] px-3 py-1 rounded-full'
-                            >
-                                {muscle}
-                            </span>
-                        ))
-                    }
+            <div className="p-4 sm:p-5">
+                <div className="flex flex-wrap gap-1.5 mb-2.5">
+                    {library.muscleGroups.map((muscle, index) => (
+                        <span
+                            key={index}
+                            className="bg-[#ccff00] text-black text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full"
+                        >
+                            {muscle}
+                        </span>
+                    ))}
                 </div>
 
-                {/* Name */}
-                <h3 className='text-xl font-bold uppercase'>
+                <h3 className="font-display font-bold text-base sm:text-lg uppercase text-white tracking-wide group-hover:text-[#ccff00] transition-colors leading-snug">
                     {library.name}
                 </h3>
 
-                {/* Equipment */}
-                <p className='text-[#9CA3AF] mt-2'>
+                <p className="text-[#7a8291] text-xs mt-1">
                     {library.equipment}
                 </p>
 
-                {/* Stats */}
-                <div className='flex justify-between mt-5 text-sm text-[#D1D5DB]'>
-
-                    <span>
-                        ⏱️ {library.duration} min
+                <div className="flex items-center gap-4 mt-4 text-xs text-[#8e95a5]">
+                    <span className="flex items-center gap-1">
+                        <span className="text-[11px]">⏱</span>
+                        <span>{library.duration} min</span>
                     </span>
 
-                    <span>
-                        🔥 {library.caloriesBurned} kcal
+                    <span className="flex items-center gap-1">
+                        <span className="text-[11px]">🔥</span>
+                        <span>{library.caloriesBurned} kcal</span>
                     </span>
 
-                    <span>
-                        ⭐ {library.rating}
+                    <span className="flex items-center gap-1">
+                        <span className="text-[11px]">⭐</span>
+                        <span>{library.rating}</span>
                     </span>
-
                 </div>
-
             </div>
-
         </Link>
     );
 };
