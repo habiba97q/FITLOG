@@ -1,35 +1,35 @@
 # FitLog
 
-A dark-themed fitness web app built with Next.js and Tailwind CSS. It helps gym-goers browse workouts, check exercise details with instructions, add lifts to a daily plan, and save exercises for later.
+FitLog is a dark-themed gym companion and workout library web application. It allows users to explore exercises covering all major muscle groups, inspect detailed workout specifications, manage a daily training plan with live metrics, and save lifts for later routines.
 
-## Live Demo & Repository
-- **Live Demo:** [Add your Vercel/Netlify link here]
-- **Repository:** https://github.com/habiba97q/FITLOG
+## Project Links
+- **Live Site:** https://fitlog-theta-sandy.vercel.app
+- **GitHub Repository:** https://github.com/habiba97q/FITLOG
 
 ## Features
-1. **Workout Library**: Browse 12 major lifts covering every muscle group in a responsive grid layout.
-2. **Dynamic Sorting**: Sort workouts by duration, calories burned, or rating with real-time updates.
-3. **Workout Details**: Dedicated page for each lift showing equipment, sets, reps, duration, calories burned, rating, and step-by-step instructions.
-4. **My Plan & Daily Log**: Add up to 5 lifts to today's workout plan and track total exercises, minutes, and estimated calories burned in real time.
-5. **Mark as Done & Remove**: Check off completed lifts in today's plan with visual feedback or remove them when needed.
-6. **Save for Later**: Keep a separate list of bookmarked workouts to build future workout routines.
-7. **Local Storage Persistence**: Saved workouts and daily plan data stay saved even after reloading the page.
-8. **Responsive Design & 404 Page**: Works smoothly on mobile, tablet, and desktop screens with custom 404 handling.
+- **Workout Library**: Displays 12 major lifts with muscle category tags, equipment needs, duration, calories burned, and ratings in a responsive grid.
+- **Dynamic Sorting**: Filter and re-sort workouts by duration, calories, or rating.
+- **Workout Details**: Dedicated view showing equipment, difficulty, sets, reps, duration, calories, and numbered step-by-step instructions.
+- **Today's Plan**: Add up to 5 lifts for today's routine with live metric calculations for exercises, minutes, and calories burned.
+- **Mark as Done & Remove**: Check off completed exercises in today's plan with visual feedback or remove items.
+- **Saved Workouts**: Bookmark favorite exercises to a separate tab for later workouts.
+- **Toast Notifications**: Interactive notifications using React Toastify when adding, removing, or completing workouts.
+- **Local Storage**: Automatically saves your plan and bookmarks in the browser so data survives reloads.
+- **Responsive Layout**: Designed for mobile, tablet, and desktop screens with custom 404 error handling.
 
 ## Technologies Used
-- Next.js 16 (App Router)
-- React 19
+- Next.js (App Router)
+- React
 - TypeScript
-- Tailwind CSS v4 & DaisyUI
+- Tailwind CSS
 - React Toastify
-- Google Fonts (Oswald & Geist)
 
 ## Getting Started
 
 1. Clone the repository:
 ```bash
 git clone https://github.com/habiba97q/FITLOG.git
-cd FITLOG
+cd fitlog-app
 ```
 
 2. Install dependencies:
@@ -42,8 +42,4 @@ npm install
 npm run dev
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-## API Endpoints
-- Workouts List: `https://api.abcz.workers.dev/api/fitlog`
-- Single Workout: `https://api.abcz.workers.dev/api/fitlog/:id`
+Open [http://localhost:3000](http://localhost:3000) in your browser.
