@@ -36,7 +36,12 @@ const Navbar = () => {
                 <div className="navbar-center hidden lg:flex">
                     <ul className="menu menu-horizontal px-1">
                         <li>
-                            <Link href='/workouts'>Workouts</Link>
+                            <Link
+                                href="/workouts"
+                                className="px-5 py-2 text-[#ccff00] hover:bg-[#1A2312] rounded-full"
+                            >
+                                Workouts
+                            </Link>
                         </li>
                         <li>
                             <details>
