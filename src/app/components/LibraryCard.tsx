@@ -1,5 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { ILibrary } from '@/types/libraryType';
 
 interface ILibraryCardProps {
@@ -8,7 +9,10 @@ interface ILibraryCardProps {
 
 const LibraryCard = ({ library }: ILibraryCardProps) => {
     return (
-        <div className='bg-[#111827] rounded-xl overflow-hidden'>
+        <Link
+            href={`/workouts/${library.id}`}
+            className='bg-[#111827] rounded-xl overflow-hidden block'
+        >
 
             {/* Image */}
             <Image
@@ -65,7 +69,7 @@ const LibraryCard = ({ library }: ILibraryCardProps) => {
 
             </div>
 
-        </div>
+        </Link>
     );
 };
 
